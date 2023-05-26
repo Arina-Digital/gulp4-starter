@@ -6,6 +6,8 @@ const concat = require('gulp-concat');
 const clean = require('gulp-clean');
 const sourcemaps = require('gulp-sourcemaps');
 const browserSync = require('browser-sync').create();
+const htmlReplace = require('gulp-html-replace');
+const gulpif = require('gulp-if');
 
 const paths = {
     src: {
@@ -34,6 +36,9 @@ function cleanDist() {
 
 function html() {
     return src(paths.src.html)
+        .pipe(gulpif(production, htmlReplace({
+            'css': './css/bundle.min.css'
+        })))
         .pipe(dest(paths.dist.html))
         .pipe(browserSync.stream());
 }
@@ -61,6 +66,7 @@ function scss() {
     return src(paths.src.scss)
         .pipe(sourcemaps.init())
         .pipe(sass(production ? { outputStyle: 'compressed' } : {}).on('error', sass.logError))
+        .pipe(gulpif(production, concat('bundle.min.css')))
         .pipe(sourcemaps.write())
         .pipe(dest(paths.dist.css))
         .pipe(browserSync.stream());
@@ -105,5 +111,4 @@ function cleanAndBuild(cb) {
 }
 
 exports.build = series(cleanAndBuild);
-
 exports.cleanStart = series(cleanDist, exports.default);
