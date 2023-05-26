@@ -37,7 +37,8 @@ function cleanDist() {
 function html() {
     return src(paths.src.html)
         .pipe(gulpif(production, htmlReplace({
-            'css': './css/bundle.min.css'
+            'css': './css/bundle.min.css',
+            'js': './js/bundle.min.js'
         })))
         .pipe(dest(paths.dist.html))
         .pipe(browserSync.stream());
@@ -45,7 +46,7 @@ function html() {
 
 function js() {
     return src(paths.src.js)
-        .pipe(dest(paths.dist.js))
+        .pipe(gulpif(!production, dest(paths.dist.js)))
         .pipe(browserSync.stream());
 }
 
