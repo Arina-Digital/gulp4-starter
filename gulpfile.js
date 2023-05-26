@@ -7,6 +7,7 @@ const clean = require('gulp-clean');
 const sourcemaps = require('gulp-sourcemaps');
 const browserSync = require('browser-sync').create();
 const htmlReplace = require('gulp-html-replace');
+const htmlmin = require('gulp-htmlmin');
 const gulpif = require('gulp-if');
 
 const paths = {
@@ -40,6 +41,7 @@ function html() {
             'css': './css/bundle.min.css',
             'js': './js/bundle.min.js'
         })))
+        .pipe(gulpif(production, htmlmin({ collapseWhitespace: true })))
         .pipe(dest(paths.dist.html))
         .pipe(browserSync.stream());
 }
